@@ -18,6 +18,16 @@ const bad = [];
 
 for (const path of files) {
   const html = readFileSync(path, 'utf8');
+
+  // Vendor verification files are intentionally minimal and should not be
+  // forced through editorial page checks.
+  if (path.endsWith('/affiliate_verification.html')) {
+    if (html.trim() !== '<body> verification: "BetBurger" </body>') {
+      bad.push(`${path}: unexpected affiliate verification content`);
+    }
+    continue;
+  }
+
   if (!html.includes('<title>')) bad.push(`${path}: missing title`);
   if (!html.includes('Affiliate disclosure')) bad.push(`${path}: missing affiliate disclosure`);
 
